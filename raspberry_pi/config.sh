@@ -1,3 +1,4 @@
+# Run this after installing packages in 'apt-required'.
 
 
 # Setting audio to use Jack output:
