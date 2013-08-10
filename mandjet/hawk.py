@@ -1,4 +1,3 @@
-
 import serial
 
 
@@ -27,14 +26,24 @@ class Hawk:
 
 class Plug:
     
-    def __init__(self, hawk, network_id, plug_id):
+    def __init__(self, hawk, network_id, plug_id, status=None):
         self.hawk = hawk
         self.network_id = bytes('n' + network_id, 'utf-8')
         self.plug_id = bytes('p' + plug_id, 'utf-8')
+        self.status = status
 
     def on(self):
         print(self.network_id + self.plug_id + b'w1')
         self.hawk.write(self.network_id + self.plug_id + b'w1')
+        self.status = True
 
     def off(self):
         self.hawk.write(self.network_id + self.plug_id + b'w0')
+        self.status = False
+    
+    def enforce(self):
+        assert self.status is not None
+        if self.status == True:
+            self.on()
+        else:
+            self.off()
