@@ -1,0 +1,11 @@
+mpd mpc
+
+nginx
+
+python-dev
+python-pip
+python3-dev
+python3-pip
+
+vorbis-tools
+mpg123
