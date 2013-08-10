@@ -21,3 +21,5 @@ sudo ln -s /etc/nginx/sites-available/ra ./
 sudo rm default
 cd -
 sudo service nginx reload
+
+sudo usermod -a -G debian-transmission okso
