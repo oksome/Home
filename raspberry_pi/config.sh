@@ -22,4 +22,12 @@ sudo rm default
 cd -
 sudo service nginx reload
 
-sudo usermod -a -G debian-transmission okso
+mkdir -p $HOME/inbox/torrent/running
+mkdir -p $HOME/inbox/torrent/complete
+
+sudo chgrp debian-transmission $HOME/inbox/torrent/running
+sudo chgrp debian-transmission $HOME/inbox/torrent/complete
+chmod 770 $HOME/inbox/torrent/running
+chmod 770 $HOME/inbox/torrent/complete
+
+sudo usermod -a -G debian-transmission $USER
