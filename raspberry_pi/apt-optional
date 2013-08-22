@@ -2,3 +2,7 @@ bpython3
 vim
 screen
 
+# Speech recognition
+# Credits: https://sites.google.com/site/observing/Home/speech-recognition-with-the-raspberry-pi
+bison
+libasound2-dev
