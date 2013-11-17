@@ -30,25 +30,19 @@ class Intercom:
     def reset(self):
         context = zmq.Context(1)
         # Socket facing clients
-        self.frontend = context.socket(zmq.SUB)
+        self.frontend = context.socket(zmq.REP)
         self.frontend.bind("tcp://*:5559")
-
-        self.frontend.setsockopt(zmq.SUBSCRIBE, b"")
 
         # Socket facing services
         self.backend = context.socket(zmq.PUB)
         self.backend.bind("tcp://*:5560")
 
     def run(self):
-        try:
-            zmq.device(zmq.FORWARDER, self.frontend, self.backend)
-        except Exception as e:
-            print(e)
-            print("bringing down zmq device")
-        finally:
-            self.frontend.close()
-            self.backend.close()
-            self.context.term()
+        while True:
+            msg = self.frontend.recv()
+            print('msg', msg)
+            self.frontend.send(b'thx')
+            self.backend.send(msg)
 
 if __name__ == '__main__':
     i = Intercom()

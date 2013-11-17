@@ -20,9 +20,8 @@ A Controller sends commands to Minions via the Intercom.
 '''
 
 import zmq
-import random
-import time
 import json
+import time
 
 
 def dump(string):
@@ -48,10 +47,23 @@ class Controller:
         self.socket.send(topic + b' ' + messagedata)
         print(topic + b' ' + messagedata)
 
+    def send2(self, topic, msg):
+        if type(topic) != bytes:
+            topic = bytes(str(topic), 'utf-8')
+        messagedata = bytes(json.dumps(msg), 'utf-8')
+
+        context = zmq.Context()
+        socket = context.socket(zmq.REQ)
+        socket.connect(self.intercom)
+        socket.send(topic + b' ' + messagedata)
+        print(topic + b' ' + messagedata)
+        reply = socket.recv()
+        print('reply', reply)
+
 
 class SampleController(Controller):
 
-    def on(self, action):
+    def do(self, action):
         topic = 'do:arduino.switch'
 
         msg = {'origin': self.name,
@@ -60,9 +72,14 @@ class SampleController(Controller):
                'action': action,
                }
 
-        self.send(topic, msg)
+        self.send2(topic, msg)
 
 if __name__ == '__main__':
     c = SampleController('bob')
     while True:
-        c.on(input('action: '))
+        print('on')
+        c.do('on')
+        time.sleep(1)
+        print('off')
+        c.do('off')
+        time.sleep(1)
