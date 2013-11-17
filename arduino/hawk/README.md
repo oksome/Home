@@ -1,4 +1,4 @@
-Arduino code part of the Ra project.
+Arduino code part of the Home project.
 
 This program provides a Serial interface to various Arduino functions such as:
 * controlling remote switches via RCSwitch
