@@ -18,7 +18,7 @@
 /*
   Copyright (c) 2013 "OKso http://okso.me"
 
-  This file is part of Ra.
+  This file is part of Home.
   
   Ra is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as
