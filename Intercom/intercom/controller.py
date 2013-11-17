@@ -22,11 +22,17 @@ A Controller sends commands to Minions via the Intercom.
 import zmq
 import random
 import time
+import json
+
+
+def dump(string):
+    return bytes(json.dumps(string), 'utf-8')
 
 
 class Controller:
 
-    def __init__(self, intercom='tcp://localhost:5559'):
+    def __init__(self, name, intercom='tcp://localhost:5559'):
+        self.name = name
         self.intercom = intercom
         self.reset()
 
@@ -35,17 +41,28 @@ class Controller:
         self.socket = context.socket(zmq.PUB)
         self.socket.connect(self.intercom)
 
-    def run(self):
+    def send(self, topic, msg):
+        if type(topic) != bytes:
+            topic = bytes(str(topic), 'utf-8')
+        messagedata = bytes(json.dumps(msg), 'utf-8')
+        self.socket.send(topic + b' ' + messagedata)
+        print(topic + b' ' + messagedata)
 
-        publisher_id = random.randrange(0, 9999)
 
-        while True:
-            topic = random.randrange(1, 10)
-            messagedata = "server#%s" % publisher_id
-            print("%s %s" % (topic, messagedata))
-            self.socket.send(bytes("%d %s" % (topic, messagedata), 'utf-8'))
-            time.sleep(0.1)
+class SampleController(Controller):
+
+    def on(self, action):
+        topic = 'do:arduino.switch'
+
+        msg = {'origin': self.name,
+               'group': '00011',
+               'plug': '10000',
+               'action': action,
+               }
+
+        self.send(topic, msg)
 
 if __name__ == '__main__':
-    c = Controller()
-    c.run()
+    c = SampleController('bob')
+    while True:
+        c.on(input('action: '))

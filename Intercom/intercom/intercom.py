@@ -33,7 +33,7 @@ class Intercom:
         self.frontend = context.socket(zmq.SUB)
         self.frontend.bind("tcp://*:5559")
 
-        self.frontend.setsockopt(zmq.SUBSCRIBE, "")
+        self.frontend.setsockopt(zmq.SUBSCRIBE, b"")
 
         # Socket facing services
         self.backend = context.socket(zmq.PUB)
@@ -42,9 +42,9 @@ class Intercom:
     def run(self):
         try:
             zmq.device(zmq.FORWARDER, self.frontend, self.backend)
-        except Exception, e:
-            print e
-            print "bringing down zmq device"
+        except Exception as e:
+            print(e)
+            print("bringing down zmq device")
         finally:
             self.frontend.close()
             self.backend.close()

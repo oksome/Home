@@ -20,6 +20,8 @@ A Minion is an network endnode, connected to some input/output gadgets.
 '''
 
 import zmq
+import json
+import serial
 
 
 class Minion:
@@ -41,9 +43,35 @@ class Minion:
     def run(self):
         while True:
             string = self.socket.recv()
-            topic, messagedata = string.split()
-            print(topic, messagedata)
+            topic, messagedata = string.split(b' ', 1)
+            topic = str(topic, 'utf-8')
+            msg = json.loads(str(messagedata, 'utf-8'))
+            self.receive(topic, msg)
+
+    def receive(self, topic, msg):
+        print(topic, msg)
+
+
+class ArduinoMinion(Minion):
+    '''
+    This Minion talks to an Arduino running 'hawk.ino'.
+    '''
+
+    def __init__(self, topics, intercom):
+        super(ArduinoMinion, self).__init__(topics, intercom)
+        self.serial = serial.Serial('/dev/ttyUSB0')
+
+    def receive(self, topic, msg):
+        if 'action' in msg:
+            switch_group = bytes('n' + msg['group'], 'utf-8')
+            switch_plug = bytes('p' + msg['plug'], 'utf-8')
+            instruction = {'on': b'w1', 'off': b'w0'}[msg['action']]
+
+            print(switch_group + switch_plug + instruction)
+            self.serial.write(switch_group + switch_plug + instruction)
+        else:
+            print('Unknown: ', msg)
 
 if __name__ == '__main__':
-    m = Minion(('8', '9'), 'tcp://localhost:5560')
+    m = ArduinoMinion(('do:arduino.switch', 'do:arduino.read'), 'tcp://localhost:5560')
     m.run()
