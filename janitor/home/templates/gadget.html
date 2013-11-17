@@ -1,0 +1,27 @@
+{% load staticfiles %}
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{% static 'home/okso.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'home/style.css' %}" />
+    </head>
+
+    <body class='okso'>
+        <a href='{% url 'home:index' %}'>Home</a>
+
+        <h1>{{ gadget.name }}</h1>
+
+        {% if gadget.description %}
+            <p>
+                {{ gadget.description }}
+            </p>
+        {% endif %}
+
+        <p>
+            <form action="{% url 'home:do' gadget.id %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="on" name="action" />
+                <input type="submit" value="off" name="action" />
+            </form>
+        </p>
+    <body>
+</html>

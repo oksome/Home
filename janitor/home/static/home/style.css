@@ -1,0 +1,55 @@
+body {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+
+    padding: 10px;
+}
+
+
+h1 a {
+    text-decoration: none;
+    color: #4F2;
+}
+h1 a:hover {
+    color: #0FF;
+}
+
+pre {
+    color: #0FF;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 1em;
+}
+a {
+    text-decoration: none;
+}
+
+section {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 5%;
+    margin-top: 1em;
+}
+
+input {
+    background-color: #000;
+    color: #0FF;
+    border: solid 1px #4F2;
+    padding: 0.5em;
+}
+input:hover {
+    background-color: #333;
+}
+
+input.large {
+    width: 65%;
+}
+input.small {
+    width: 20%;
+}
+input.max {
+    width: 95%;
+}
+
+input[type=submit] {
+    padding: 0.4em;
+}

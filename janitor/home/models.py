@@ -76,6 +76,7 @@ class RF433Switch(Switch):
 
     def turn(self, mode):
         "Turn 'on' or 'off'."
+
         topic = 'do:arduino.switch'
 
         msg = {'origin': 'janitor',
