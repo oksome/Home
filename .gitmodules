@@ -1,3 +1,6 @@
 [submodule "Intercom"]
 	path = Intercom
 	url = git@github.com:oksome/Intercom.git
+[submodule "tumulus"]
+	path = tumulus
+	url = git@github.com:oksome/tumulus.git
