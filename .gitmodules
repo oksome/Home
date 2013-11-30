@@ -1,0 +1,3 @@
+[submodule "Intercom"]
+	path = Intercom
+	url = git@github.com:oksome/Intercom.git
