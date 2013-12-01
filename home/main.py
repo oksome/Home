@@ -10,6 +10,7 @@ from tumulus.tags import HTMLTags as t
 from intercom.controller import Controller
 
 import modules
+import config
 
 app = application = Bottle()
 controller = Controller('interface.Home')
@@ -46,6 +47,14 @@ def mpd():
         redirect('/')
     else:
         raise HTTPError(400)
+
+@app.get('/api/wol')
+def wol():
+    controller.send('do:net.wol', {'mac': config.WOL['mac']})
+
+@app.get('/api/pc')
+def pc():
+    controller.send('do:pc.suspend', {})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', reloader=True, debug=True)
