@@ -1,4 +1,4 @@
-from bottle import Bottle, request, redirect
+from bottle import Bottle, request, redirect, HTTPError
 import os
 import sys
 
@@ -24,6 +24,10 @@ def index():
             modules.plug('Mixer', '00001', '01000'),
             modules.plug('Ampli', '00001', '00100'),
             modules.plug('Desk',  '00001', '00010'),
+            modules.mpd('play'),
+            modules.mpd('pause'),
+            modules.mpd('prev'),
+            modules.mpd('next'),
         ),
     ).build()
 
@@ -33,12 +37,15 @@ def switch():
     action = request.forms.get('action')
     controller.send('do:arduino.switch', {'action': action, 'group': '00001', 'plug': plug})
     redirect('/')
-    #return t.html(
-    #    t.body(
-    #        t.p('Done'),
-    #    ),
-    #).build()
 
+@app.post('/api/mpd')
+def mpd():
+    action = request.forms.get('action')
+    if action in ('play', 'pause', 'prev', 'next'):
+        controller.send('do:mpd.' + action, {})
+        redirect('/')
+    else:
+        raise HTTPError(400)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', reloader=True, debug=True)

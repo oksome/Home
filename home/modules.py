@@ -11,3 +11,12 @@ def plug(label, group, plug):
             method='POST',
             action='/api/switch',
         )
+
+def mpd(action):
+     return t.form(
+            t.input(name='action', value=action, type='hidden'),
+            t.input(value=action, type='submit'),
+            method='POST',
+            action='/api/mpd',
+        )
+
