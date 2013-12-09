@@ -24,6 +24,8 @@ def index():
             modules.plug('Mixer', '00001', '01000'),
             modules.plug('Ampli', '00001', '00100'),
             modules.plug('Desk',  '00001', '00010'),
+            modules.plug('Kitchen',  '00011', '10000'),
+            modules.plug('Sink',  '00011', '01000'),
             modules.mpd('play'),
             modules.mpd('pause'),
             modules.mpd('prev'),
