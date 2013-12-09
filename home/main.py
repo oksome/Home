@@ -1,4 +1,4 @@
-from bottle import Bottle, request, redirect, HTTPError
+from bottle import Bottle, request, response, redirect, HTTPError
 import os
 import sys
 
@@ -7,9 +7,11 @@ sys.path.append(root)
 sys.path.append(os.path.join(root, 'Intercom'))
 
 from tumulus.tags import HTMLTags as t
+import tumulus.formulas as f
 from intercom.controller import Controller
 
 import modules
+import config
 
 app = application = Bottle()
 controller = Controller('interface.Home')
@@ -17,6 +19,11 @@ controller = Controller('interface.Home')
 @app.get('/')
 def index():
     return t.html(
+        t.head(
+            f.utf8(),
+            f.mobile(),
+            f.css('css/style.css'),
+        ),
         t.body(
             t.h1('Home'),
             t.p('Home automation interface'),
@@ -48,6 +55,19 @@ def mpd():
         redirect('/')
     else:
         raise HTTPError(400)
+
+@app.get('/api/wol')
+def wol():
+    controller.send('do:net.wol', {'mac': config.WOL['mac']})
+
+@app.get('/api/pc')
+def pc():
+    controller.send('do:pc.suspend', {})
+
+@app.get('/css/style.css')
+def style():
+    response.content_type = 'text/css'
+    return open('static/css/style.css').read()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', reloader=True, debug=True)
