@@ -27,12 +27,12 @@ def index():
         t.body(
             t.h1('Home'),
             t.p('Home automation interface'),
-            modules.plug('Bed',   '00001', '10000'),
-            modules.plug('Mixer', '00001', '01000'),
-            modules.plug('Ampli', '00001', '00100'),
-            modules.plug('Desk',  '00001', '00010'),
-            modules.plug('Kitchen',  '00011', '10000'),
-            modules.plug('Sink',  '00011', '01000'),
+            modules.plug('Bed',     '00001', '10000'),
+            modules.plug('Mixer',   '00001', '01000'),
+            modules.plug('Ampli',   '00001', '00100'),
+            modules.plug('Desk',    '00001', '00010'),
+            modules.plug('Kitchen', '00011', '10000'),
+            modules.plug('Sink',    '00011', '01000'),
             modules.mpd('play'),
             modules.mpd('pause'),
             modules.mpd('prev'),
@@ -43,8 +43,9 @@ def index():
 @app.post('/api/switch')
 def switch():
     plug = request.forms.get('plug')
+    group = request.forms.get('group')
     action = request.forms.get('action')
-    controller.send('do:arduino.switch', {'action': action, 'group': '00001', 'plug': plug})
+    controller.send('do:arduino.switch', {'action': action, 'group': group, 'plug': plug})
     redirect('/')
 
 @app.post('/api/mpd')
