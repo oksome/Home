@@ -16,7 +16,7 @@
 */
 
 /*
-  Copyright (c) 2013 "OKso http://okso.me"
+  Copyright (c) 2013-2014 "OKso http://okso.me"
 
   This file is part of Home.
   
@@ -34,7 +34,13 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+//#define DEBUG
+
 #include <RCSwitch.h>
+#include <DHT.h>
+
+dht DHT;
+#define DHT22_PIN 3
 
 RCSwitch mySwitch = RCSwitch();
 
@@ -55,6 +61,13 @@ char plug_id[5+1] = "00010";
 void setup() {
   MODE = 'w';
   
+  // DHT22 setup
+  pinMode(2, OUTPUT);
+  pinMode(4, OUTPUT);
+  digitalWrite(2, LOW);
+  digitalWrite(4, HIGH);
+  
+  // RF433 setup
   pinMode(9, OUTPUT); 
   pinMode(10, OUTPUT);
   digitalWrite(9, LOW);
@@ -62,12 +75,14 @@ void setup() {
   // Transmitter is connected to Arduino Pin #10  
   mySwitch.enableTransmit(11);
   
-  Serial.begin(9600);
-  Serial.println("Welcome.");
-  Serial.print("net = ");
-  Serial.println(network_id);
-  Serial.print("plug = ");
-  Serial.println(plug_id);
+  Serial.begin(115200);
+  #ifdef DEBUG
+    Serial.println("Welcome.");
+    Serial.print("net = ");
+    Serial.println(network_id);
+    Serial.print("plug = ");
+    Serial.println(plug_id);
+  #endif
 }
 
 void loop() {
@@ -136,4 +151,50 @@ void loop() {
       }
     }
   }
+  
+  checkSensors();
+}
+
+void checkSensors() {
+  // READ DATA
+
+  uint32_t start = micros();
+  int chk = DHT.read22(DHT22_PIN);
+  uint32_t stop = micros();
+
+  switch (chk)
+  {
+  case DHTLIB_OK:
+    #ifdef DEBUG
+        Serial.print("OK,\t");
+    #endif
+    break;
+  case DHTLIB_ERROR_CHECKSUM:
+    return;
+    Serial.print("Checksum error,\t");
+    break;
+  case DHTLIB_ERROR_TIMEOUT:
+    return;
+    Serial.print("Time out error,\t");
+    break;
+  default:
+    Serial.print("Unknown error,\t");
+    break;
+  }
+
+  #ifdef DEBUG
+    // DISPLAY DATA
+    Serial.print(DHT.humidity, 1);
+    Serial.print(",\t");
+    Serial.print(DHT.temperature, 1);
+    Serial.print(",\t");
+    Serial.print(stop - start);
+    Serial.println();
+  #endif
+
+  Serial.print("{\"humidity\": ");
+  Serial.print(DHT.humidity, 1);
+  Serial.print(", \"temperature\": ");
+  Serial.print(DHT.temperature, 1);
+  Serial.print("}\n");
 }
